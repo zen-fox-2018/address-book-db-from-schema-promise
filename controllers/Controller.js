@@ -8,7 +8,10 @@ class Controller {
         
         newEmployee.create()  
             .then(() => {
-                View.displaySuccess('Success ')
+                return Employee.findAll()
+            })
+            .then((data) => {
+                View.displaySuccess(`Save data success {${input.name}, ${input.username}, ${input.password}, ${input.position}}. Total Employee: ${data.length}`)
             })
             .catch((err) => {
                 View.displayErr('Err : ', err)
@@ -19,6 +22,7 @@ class Controller {
         Employee.findOne({field: 'isLogin', value: 'true'})
             .then((data) => {
                 if(data) {
+                    // View.alert('Somebody is Log In!!')
                     throw `somebody is log in`
                 } else {
                     return Employee.findOne({field: 'username', value: input.username})
@@ -27,16 +31,18 @@ class Controller {
             .then((dataEmployee) => {
                 if(dataEmployee) {
                     if(dataEmployee.password !== input.password) {
-                        throw `Wrong password`
+                        // View.alert('Wrong Password!!')
+                        throw `Wrong Password!!`
                     } else {
                         return dataEmployee.update({field: 'isLogin', value: 'true', username: input.username})
                     }
                 } else {
-                    throw `Username not found`
+                    throw `Username Not Found!!`
+                    // View.alert('Username Not Found!!')
                 }
             })
-            .then(() => {
-                View.displaySuccess('Success Log in')
+            .then((data) => {
+                View.displaySuccess(`User ${input.username} loged in successfully`)
             })
             .catch((err) => {
                 View.displayErr('Err : ', err)
@@ -47,19 +53,21 @@ class Controller {
         Employee.findOne({field: 'isLogin', value: 'true'})
             .then((data) => {
                 if(!data) {
-                    View.alert('Please log in first')
+                    throw `Please Log In First`
+                    // View.alert('Please log in first')
                 } else {
                     if(data.position !== 'docter') {
                         throw `only doctor can add Patient`
                     } else {
                         let newPatient = new Patient(null, input.name, input.diagnose)
-                        return newPatient.create()
+                        newPatient.create()
+                        return Employee.findAll()
                     }
                 }
             })
-            .then((data2) => {
-                if(data2) {
-                    View.displaySuccess('Berhasil add patient')
+            .then((patientData) => {
+                if(patientData) {
+                    View.displaySuccess(`Successfully add patient data. Total Patient: ${patientData.length}`)
                 }
             })
             .catch((err) => {
@@ -71,12 +79,13 @@ class Controller {
         Employee.findOne({field: 'username', value: input.username})
             .then((data) => {
                 if(!data) {
-                    throw `You're not log in`
+                    // View.alert('You are not Log In')
+                    throw('You are not Log In')
                 } else {
                     return data.update({field: 'isLogin', value: 'false', username: input.username})
                 }
             })
-            .then(() => {
+            .then((data) => {
                 View.displaySuccess('Berhasil Logout')
             })
             .catch((err) => {
