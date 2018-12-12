@@ -29,10 +29,6 @@ class View {
       console.log(`Welcome! User ${username} logged in successfully.`)
   }
 
-  static updateError(err) {
-      console.log(`Update ERROR: ${err}`)
-  }
-
   static errorLogin(err) {
       // console.log(`Someone is login in the system.`)
       console.log(`ERROR [LOGIN ERROR] ${err}`);
