@@ -43,7 +43,7 @@ class EmployeeController {
     Employee.findOne(objCheck)
       .then(function(row) {
         if (Object.keys(row).length !== 0) {
-          View.loginFailed()
+          throw `you are already login, please logout to switch account`
         }
         else {
           return Employee.findOne(obj)
@@ -51,7 +51,7 @@ class EmployeeController {
       })
       .then(function(row) {
         if (Object.keys(row).length === 0) {
-          View.wrongUsername()
+          throw `Can't find username`
         }
         else {
           loginUser = row
@@ -63,7 +63,7 @@ class EmployeeController {
             return loginUser.update(loginObj)
           }
           else {
-            View.wrongPassword()
+            throw `Wrong password, please remember your password dude`
           }
         }
       })
@@ -72,7 +72,7 @@ class EmployeeController {
           View.loginSucces(options[0])
         }
         else {
-          View.loginFailed()
+          throw `Something wrong during the process, please try again`
         }
       })
       .catch(function(err) {
@@ -91,11 +91,11 @@ class EmployeeController {
     Employee.findOne(objCheck)
       .then(function(row) {
         if (Object.keys(row).length === 0) {
-          View.pleaseLogin()
+          throw `Please login as doctor to add patient`
         }
         else {
           if (row.role !== "dokter") {
-            View.pleaseLoginDoctor()
+            throw `Please login as doctor to add patient`
           }
           else {
             obj = {
@@ -112,7 +112,7 @@ class EmployeeController {
           return Patient.findAll()
         }
         else {
-          View.error('Something went wrong while adding patient')
+          throw `Something went wrong while adding patient`
         }
       })
       .then(function(rows) {
@@ -139,7 +139,7 @@ class EmployeeController {
     Employee.findOne(objCheck)
       .then(function(row) {
         if (Object.keys(row).length === 0) {
-          View.alreadyLogout()
+          throw `You are already logout`
         }
         else {
           dataLogout = row
@@ -151,7 +151,7 @@ class EmployeeController {
           View.logoutSucces()
         }
         else {
-          View.logoutFailed()
+          throw `Something wrong during the process, please try again`
         }
       })
       .catch(function(err) {
