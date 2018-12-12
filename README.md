@@ -1,1 +1,0 @@
-# address-book-db-from-schema-promise
