@@ -24,12 +24,11 @@ class Patient {
 
     static findById(id) { 
         return new Promise ((resolve, reject)=> {
-            db.all(`SELECT * FROM patients
+            db.get(`SELECT * FROM patients
                 WHERE id = ? ;`, id, (err, rows)=> {
                     if(err) reject(err)
                     else {
-                        let result = []
-                        result.push(new Patient(rows[0]))
+                        let result = new Patient(rows)
                         resolve(result)
                     }
                 })
@@ -38,7 +37,7 @@ class Patient {
     
     static CountPatient () {
         return new Promise((resolve, reject)=> {
-            db.all(`SELECT COUNT(*) AS total FROM patients;`, (err,rows)=> {
+            db.get(`SELECT COUNT(*) AS total FROM patients;`, (err,rows)=> {
                 if(err) reject(err)
                 else resolve(rows)
             })

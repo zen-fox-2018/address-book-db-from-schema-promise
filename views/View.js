@@ -7,8 +7,7 @@ class View {
         console.log(data);
     }
     static successLogin(name) {
-        console.log(`user ${name} logged in successfully`);
-        
+        console.log(`user ${name} logged in successfully`);    
     }
     static successLogout(name) {
         console.log(`user ${name} logged out successfully`);

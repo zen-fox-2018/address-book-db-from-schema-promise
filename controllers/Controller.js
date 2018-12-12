@@ -4,7 +4,8 @@ const View = require('../views/View.js')
 
 class Controller {
     static searchEmployee() {
-        Employee.findByAll().then((data)=> {
+        Employee.findByAll()
+        .then((data)=> {
             View.showData(data)
         }).catch((err)=> {
             View.showErr(err)
@@ -13,7 +14,8 @@ class Controller {
     }
 
     static searchPatient() { 
-        Patient.findByAll().then(data=> {
+        Patient.findByAll()
+        .then(data=> {
             View.showData(data)
         }).catch(err => {
             View.showErr(err)
@@ -21,10 +23,12 @@ class Controller {
     }
 
     static registerData(name, username, password, role) {
-        Employee.insertDataEmployee([name, username, password, role]).then(()=> {
+        Employee.insertDataEmployee([name, username, password, role])
+        .then(()=> {
            return Employee.CountEmployee()
-        }).then((dataCount)=> {
-            View.showSuccess(dataCount[0].total)
+        })
+        .then((dataCount)=> {
+            View.showSuccess(dataCount.total)
         })
         .catch((err)=> {
             View.showErr(err)
@@ -33,16 +37,16 @@ class Controller {
 
     static loginEmployee(name, password) {
         Employee.findOne('isLogin', 1).then((data)=> {
-            if(data.length) {
+            if(data) {
                 throw `User already logged in`
             } else {
                 return Employee.findOne('username', name)
             }
         }).then((dataEmployee)=> {
-            if(dataEmployee.length == 0) {
+            if(!dataEmployee) {
                 throw `username / password wrong`
-            } else if (dataEmployee[0].password == password){
-                return Employee.updateIsLog(dataEmployee[0].id, 1)
+            } else if (dataEmployee.password == password){
+                return Employee.updateData(dataEmployee.id, 1, 'isLogin')
             } else {
                 throw `username / password wrong`
             }
@@ -56,14 +60,14 @@ class Controller {
     static logoutEmployee() {
         let tempData = []
         Employee.findOne('isLogin', 1).then((data)=> {
-            if(!data.length) {
+            if(!data) {
                 throw `User need to logged in`
             } else {
                 tempData = data
-                return Employee.updateIsLog(data[0].id, 0)
+                return Employee.updateData(data.id, 0, 'isLogin')
             }
         }).then(()=> {
-            View.successLogout(tempData[0].username)
+            View.successLogout(tempData.username)
         }).catch(err => {
             View.showErr(err)
         })
@@ -71,10 +75,10 @@ class Controller {
 
     static addPatient(name, diagnosis) {
         Employee.findOne('isLogin', 1).then(data => {
-            if(!data.length) {
+            if(!data) {
                 throw `User need to logged in`
             } else {
-                if(data[0].posisition != 'dokter') {
+                if(data.posisition != 'dokter') {
                     throw `tidak memiliki akses untuk add patient`
                 } else {
                     return Patient.insertPatient(name, diagnosis)
@@ -83,7 +87,7 @@ class Controller {
         }).then(()=> {
             return Patient.CountPatient()
         }).then(dataCount => {
-            View.successAddPatient(dataCount[0].total)
+            View.successAddPatient(dataCount.total)
         })
         .catch(err=> {
             View.showErr(err)

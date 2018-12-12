@@ -28,7 +28,7 @@ class Employee {
 
     static CountEmployee () {
         return new Promise((resolve, reject)=> {
-            db.all(`SELECT COUNT(*) AS total FROM employees;`, (err,rows)=> {
+            db.get(`SELECT COUNT(*) AS total FROM employees;`, (err,rows)=> {
                 if(err) reject(err)
                 else resolve(rows)
             })
@@ -38,8 +38,8 @@ class Employee {
 
     static findOne(collums, value) {
        return new Promise((resolve, reject)=> {
-        db.all(`SELECT * FROM employees
-        WHERE ${collums} = ?`, value, 
+        db.get(`SELECT * FROM employees
+        WHERE ${collums} = ?`, value , 
         (err,data)=>{
             if(err) reject(err)
             else {
@@ -51,12 +51,11 @@ class Employee {
 
     static findById(id){
         return new Promise((resolve, reject)=> {
-            db.all(`SELECT * FROM employees
-                WHERE id = ${id};`, (err,rows)=> {
+            db.get(`SELECT * FROM employees
+                WHERE id = ?;`, id, (err,rows)=> {
                     if(err) reject(err)
                     else {
-                        let result = []
-                        result.push(new Employee(rows[0]))
+                        let result = new Employee(rows)
                         resolve(result)
                     }
                 })
@@ -76,10 +75,10 @@ class Employee {
         })  
     }
 
-    static updateIsLog(id, value) {
+    static updateData(id, value , fieldValue) {
         return new Promise((resolve, reject)=> {
             db.run(`UPDATE employees
-            SET isLogin = ?
+            SET ${fieldValue} = ?
             where id =  ${id}`, value , (err) =>{
                 if(err) reject(err)
                 else resolve()   
